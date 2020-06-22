@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+    id 'com.gradle.enterprise.test-distribution' version '1.0.2'
+}
+
+repositories {
+    // Use jcenter for resolving dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+    maven {
+        url "https://repo.gradle.org/gradle/libs"
+    }
+}
+
+dependencies {
+    testImplementation(gradleApi())
+    testImplementation(rootProject.files("test-distribution-gradle-plugin-1.0.3-rc-1.jar"))
+    testImplementation("org.gradle:sample-check:0.12.6")
+    testImplementation("org.junit.vintage:junit-vintage-engine:5.6.2")
+}
+
+test {
+    useJUnitPlatform()
+    distribution {
+        enabled = true
+        maxLocalExecutors = 0
+    }
+    systemProperty('integTest.samplesdir', file('samples'))
+    filter {
+        excludeTestsMatching 'docsTest.ExemplarExternalSamplesFunctionalTest.*java*'
+    }
+}
